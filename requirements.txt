@@ -1,2 +1,3 @@
 pytest
 selene>=2.0.b4
+chromedriver_autoinstaller>=0.3.1

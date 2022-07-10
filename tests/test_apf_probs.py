@@ -1,13 +1,13 @@
 __author__ = 'miserylab'
 
 from selene import have, command
-from selene.core.entity import Element
 from selene.support.shared import browser
+from selene.support.shared.jquery_style import s
 
-from demoqa_tests.controls import dropdown, TagsInput, table
+from demoqa_tests.controls import dropdown, TagsInput
+from demoqa_tests.controls.datepicker import DatePicker
+from demoqa_tests.controls.table import Table
 from demoqa_tests.path.path import data
-from demoqa_tests.controls import tags_input
-
 
 
 def test_student_registration_form():
@@ -19,25 +19,23 @@ def test_student_registration_form():
     browser.element('#userEmail').type('test@test.com')
     browser.element("[for='gender-radio-2']").click()
     browser.element('#userNumber').type('1234567890')
-    browser.element('#dateOfBirthInput').click()
 
-    # def select(element: Element, /, *, month: int, year: int, day: int):
-    #     element.click()
-    #     browser.element('.react-datepicker__month-select').click().element(month).click()
-    #     browser.element('.react-datepicker__year-select').click().element(year).click()
-    #     browser.element(f'.react-datepicker__day--{day}').click()
-    #
-    #
-    # def set_value(element: Element, /, *, date: str):
-    #     element.element('#dateOfBirthInput').perform(command.js.set_value(date))
-    #
-    # select(browser.element('#dateOfBirthInput'), 8, 1973, 13)
-    # set_value(browser.element('#dateOfBirthInput'), '13 Sep 1973')
+    date = DatePicker(browser.element('#dateOfBirthInput'))
 
+    # date.select(13, 9, 1973)
+    date.set_value('13 Sep 1973')
 
-    browser.element('.react-datepicker__month-select').click().element("[value='8']").click()
-    browser.element('.react-datepicker__year-select').click().element("[value='1973']").click()
-    browser.element('.react-datepicker__day--013').click()
+    subjects = TagsInput(browser.element('#subjectsInput'))
+
+    subjects.add('Com', autocomplete='Computer Science')
+    subjects.add('English')
+    '''
+    # OR:
+    subjects = browser.element('#subjectsInput')
+    tags_input.add(subjects, from_='Com', to=Subjects.computer_science)
+    tags_input.add(subjects, from_=Subjects.english)
+    '''
+
 
     browser.element("[for='hobbies-checkbox-2']").click()
     browser.element("[for='hobbies-checkbox-3']").click()
@@ -68,16 +66,7 @@ def test_student_registration_form():
             browser.all('.subjects-auto-complete__option').element_by(have.exact_text(from_))
         '''
 
-    subjects = TagsInput(browser.element('#subjectsInput'))
 
-    subjects.add('Com', autocomplete='Computer Science')
-    subjects.add('English')
-    '''
-    # OR:
-    subjects = browser.element('#subjectsInput')
-    tags_input.add(subjects, from_='Com', to=Subjects.computer_science)
-    tags_input.add(subjects, from_=Subjects.english)
-    '''
 
     # browser.element('#subjectsInput').send_keys('S').hover()
 
@@ -98,16 +87,29 @@ def test_student_registration_form():
     browser.element('#submit').perform(command.js.click)
 
     # asserts
-    table.cells_of_row(0).should(have.exact_texts('Student Name', 'firstName lastName'))
-    table.cells_of_row(1).should(have.exact_texts('Student Email', 'test@test.com'))
-    table.cells_of_row(2).should(have.exact_texts('Gender', 'Female'))
-    table.cells_of_row(3).should(have.exact_texts('Mobile', '1234567890'))
-    table.cells_of_row(4).should(have.exact_texts('Date of Birth', '13 September,1973'))
-    table.cells_of_row(5).should(have.exact_texts('Subjects', 'Computer Science, English'))
-    table.cells_of_row(6).should(have.exact_texts('Hobbies', 'Reading, Music'))
-    table.cells_of_row(7).should(have.exact_texts('Picture', 'e85.jpg'))
-    table.cells_of_row(8).should(have.exact_texts('Address', 'currentAddress'))
-    table.cells_of_row(9).should(have.exact_texts('State and City', 'Haryana Panipat'))
+    table = Table(browser.element('.table'))
+    table.cell(0, 1).should(have.exact_text('firstName lastName'))
+    # table.cells_of_row(1, 2).should(have.exact_texts('Student Name', 'firstName lastName'))
+    # table.cells_of_row(1, 2).should(have.exact_texts('Student Name', 'firstName lastName'))
+    # browser.element('table tbody tr:nth-child(1) td:nth-child(2)').should(have.exact_text('firstName lastName'))
+    table.cell(1, 1).should(have.exact_text('test@test.com'))
+    table.cell(2, 1).should(have.exact_text('Female'))
+    table.cell(3, 1).should(have.exact_text('1234567890'))
+    table.cell(4, 1).should(have.exact_text('13 September,1973'))
+    table.cell(5, 1).should(have.exact_text('Computer Science, English'))
+    table.cell(6, 1).should(have.exact_text('Reading, Music'))
+    table.cell(7, 1).should(have.exact_text('e85.jpg'))
+    table.cell(8, 1).should(have.exact_text('currentAddress'))
+    table.cell(9, 1).should(have.exact_text('Haryana Panipat'))
+    # table.cells_of_row(2, 2).should(have.exact_texts('Student Email', 'test@test.com'))
+    # table.cells_of_row(2).should(have.exact_texts('Gender', 'Female'))
+    # table.cells_of_row(3).should(have.exact_texts('Mobile', '1234567890'))
+    # table.cells_of_row(4).should(have.exact_texts('date of Birth', '13 September,1973'))
+    # table.cells_of_row(5).should(have.exact_texts('Subjects', 'Computer Science, English'))
+    # table.cells_of_row(6).should(have.exact_texts('Hobbies', 'Reading, Music'))
+    # table.cells_of_row(7).should(have.exact_texts('Picture', 'e85.jpg'))
+    # table.cells_of_row(8).should(have.exact_texts('Address', 'currentAddress'))
+    # table.cells_of_row(9).should(have.exact_texts('State and City', 'Haryana Panipat'))
 
 
 # def select_by(selector: str, /, *, option: str):  # todo: consider option_text

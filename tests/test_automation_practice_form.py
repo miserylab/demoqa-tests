@@ -1,10 +1,11 @@
 __author__ = 'miserylab'
 
 from selene import have, command
-from selene.core.entity import SeleneElement
 from selene.support.shared import browser
 
-from demoqa_tests.controls import dropdown
+from demoqa_tests.controls import dropdown, TagsInput
+from demoqa_tests.controls.datepicker import DatePicker
+from demoqa_tests.controls.table import Table
 from demoqa_tests.path.path import data
 
 
@@ -17,14 +18,22 @@ def test_student_registration_form():
     browser.element('#userEmail').type('test@test.com')
     browser.element("[for='gender-radio-2']").click()
     browser.element('#userNumber').type('1234567890')
-    browser.element('#dateOfBirthInput').click()
-    browser.element('.react-datepicker__month-select').click().element("[value='8']").click()
-    browser.element('.react-datepicker__year-select').click().element("[value='1973']").click()
-    browser.element('.react-datepicker__day--013').click()
+
+    date = DatePicker(browser.element('#dateOfBirthInput'))
+
+    date.select(13, 9, 1973)
+    '''
+    # OR:
+    date.set_value('13 Sep 1973')
+    '''
+
+    subjects = TagsInput(browser.element('#subjectsInput'))
+
+    subjects.add('Com', autocomplete='Computer Science')
+    subjects.add('English')
+
     browser.element("[for='hobbies-checkbox-2']").click()
     browser.element("[for='hobbies-checkbox-3']").click()
-    browser.element('#subjectsInput').send_keys('S').hover()
-    browser.element('#react-select-2-option-2').click()
 
     browser.element('#uploadPicture').send_keys(data('e85.jpg'))
 
@@ -36,22 +45,14 @@ def test_student_registration_form():
     browser.element('#submit').perform(command.js.click)
 
     # asserts
-    browser.elements('table tr').element(1).should(have.text('firstName lastName'))
-    browser.elements('table tr').element(2).should(have.text('test@test.com'))
-    browser.elements('table tr').element(3).should(have.text('Female'))
-    browser.elements('table tr').element(4).should(have.text('1234567890'))
-    browser.elements('table tr').element(5).should(have.text('13 September,1973'))
-    browser.elements('table tr').element(6).should(have.text('Physics'))
-    browser.elements('table tr').element(7).should(have.text('Reading, Music'))
-    browser.elements('table tr').element(8).should(have.text('e85.jpg'))
-    browser.elements('table tr').element(9).should(have.text('currentAddress'))
-    browser.elements('table tr').element(10).should(have.text('Haryana Panipat'))
-
-
-def select(element: SeleneElement, /, *, option: str):  # todo: consider option_text
-    element.perform(command.js.scroll_into_view).click()
-    browser.all('[id^=react-select-][id*=-option]').element_by(have.exact_text(option)).perform(command.js.click)
-
-
-def select_by(selector: str, /, *, option: str):  # todo: consider option_text
-    select(browser.element(selector), option=option)
+    table = Table(browser.element('.table'))
+    table.cell(0, 1).should(have.exact_text('firstName lastName'))
+    table.cell(1, 1).should(have.exact_text('test@test.com'))
+    table.cell(2, 1).should(have.exact_text('Female'))
+    table.cell(3, 1).should(have.exact_text('1234567890'))
+    table.cell(4, 1).should(have.exact_text('13 September,1973'))
+    table.cell(5, 1).should(have.exact_text('Computer Science, English'))
+    table.cell(6, 1).should(have.exact_text('Reading, Music'))
+    table.cell(7, 1).should(have.exact_text('e85.jpg'))
+    table.cell(8, 1).should(have.exact_text('currentAddress'))
+    table.cell(9, 1).should(have.exact_text('Haryana Panipat'))

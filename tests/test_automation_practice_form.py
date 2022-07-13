@@ -3,9 +3,10 @@ __author__ = 'miserylab'
 from selene import have, command
 from selene.support.shared import browser
 
-from demoqa_tests.controls import dropdown, TagsInput
+from demoqa_tests.controls import dropdown
 from demoqa_tests.controls.datepicker import DatePicker
 from demoqa_tests.controls.table import Table
+from demoqa_tests.controls.tags_input import TagsInput
 from demoqa_tests.path.path import data
 
 
@@ -29,8 +30,8 @@ def test_student_registration_form():
 
     subjects = TagsInput(browser.element('#subjectsInput'))
 
-    subjects.add('Com', autocomplete='Computer Science')
-    subjects.add('English')
+    subjects.add_by_choosing('Com', option='Computer Science')
+    subjects.add_by_tab_autocomplete('En')
 
     browser.element("[for='hobbies-checkbox-2']").click()
     browser.element("[for='hobbies-checkbox-3']").click()

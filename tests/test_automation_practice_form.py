@@ -1,59 +1,39 @@
 __author__ = 'miserylab'
 
-from selene import have, command
-from selene.support.shared import browser
 
-from demoqa_tests.controls import dropdown
-from demoqa_tests.controls.datepicker import DatePicker
-from demoqa_tests.controls.table import Table
-from demoqa_tests.controls.tags_input import TagsInput
-from demoqa_tests.path.path import data
+
+from demoqa_tests.app import app
+from demoqa_tests.data import Student, Gender, Subjects, Hobbies
 
 
 def test_student_registration_form():
-    browser.open('/automation-practice-form')
+    app.given_student_registration_form_opened()
 
-    browser.element('.main-header').should(have.exact_text('Practice Form'))
-    browser.element('#firstName').type('firstName')
-    browser.element('#lastName').type('lastName')
-    browser.element('#userEmail').type('test@test.com')
-    browser.element("[for='gender-radio-2']").click()
-    browser.element('#userNumber').type('1234567890')
+    # WHEN
+    app.form.set_first_name(Student.name) \
+        .set_last_name(Student.surname) \
+        .set_email(Student.email) \
+        .set_gender(Gender.female) \
+        .set_number(Student.mobile_number) \
+        .set_date_of_birth(Student.year, Student.month, Student.day) \
+        .set_subjects(Subjects.computer_science, Subjects.english) \
+        .set_hobbies(Hobbies.reading, Hobbies.music) \
+        .upload_picture(Student.image) \
+        .set_current_address(Student.address) \
+        .set_state(Student.state) \
+        .set_city(Student.city) \
+        .submit()
 
-    date = DatePicker(browser.element('#dateOfBirthInput'))
 
-    date.select(13, 9, 1973)
-    '''
-    # OR:
-    date.set_value('13 Sep 1973')
-    '''
+    # THEN
 
-    subjects = TagsInput(browser.element('#subjectsInput'))
-
-    subjects.add_by_choosing('Com', option='Computer Science')
-    subjects.add_by_tab_autocomplete('En')
-
-    browser.element("[for='hobbies-checkbox-2']").click()
-    browser.element("[for='hobbies-checkbox-3']").click()
-
-    browser.element('#uploadPicture').send_keys(data('e85.jpg'))
-
-    browser.element('#currentAddress').type('currentAddress')
-
-    dropdown.select(browser.element('#state'), option='Haryana')
-    dropdown.autocomplete(browser.element('#city'), option='Panipat')
-
-    browser.element('#submit').perform(command.js.click)
-
-    # asserts
-    table = Table(browser.element('.table'))
-    table.cell(0, 1).should(have.exact_text('firstName lastName'))
-    table.cell(1, 1).should(have.exact_text('test@test.com'))
-    table.cell(2, 1).should(have.exact_text('Female'))
-    table.cell(3, 1).should(have.exact_text('1234567890'))
-    table.cell(4, 1).should(have.exact_text('13 September,1973'))
-    table.cell(5, 1).should(have.exact_text('Computer Science, English'))
-    table.cell(6, 1).should(have.exact_text('Reading, Music'))
-    table.cell(7, 1).should(have.exact_text('e85.jpg'))
-    table.cell(8, 1).should(have.exact_text('currentAddress'))
-    table.cell(9, 1).should(have.exact_text('Haryana Panipat'))
+    app.results.should_have_row_with_exact_texts(0, 1, Student.name, Student.surname)
+    app.results.should_have_row_with_exact_texts(1, 1, Student.email)
+    app.results.should_have_row_with_exact_texts(2, 1, Gender.female)
+    app.results.should_have_row_with_exact_texts(3, 1, Student.mobile_number)
+    app.results.should_have_row_with_exact_texts(4, 1, Student.date_of_birth)
+    app.results.should_have_row_with_exact_texts(5, 1, Subjects.computer_science, Subjects.english)
+    app.results.should_have_row_with_exact_texts(6, 1, Hobbies.reading, Hobbies.music)
+    app.results.should_have_row_with_exact_texts(7, 1, Student.image)
+    app.results.should_have_row_with_exact_texts(8, 1, Student.address)
+    app.results.should_have_row_with_exact_texts(9, 1, Student.state, Student.city)

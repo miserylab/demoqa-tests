@@ -1,5 +1,6 @@
 __author__ = 'miserylab'
 
+
 class Student:
     name = 'firstName'
     surname = 'lastName'

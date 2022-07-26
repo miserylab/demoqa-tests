@@ -1,10 +1,11 @@
 __author__ = 'miserylab'
 
 import allure
+from selene.support.shared import browser
 
 from demoqa_tests.app import app
 from demoqa_tests.data import Student, Gender, Subjects, Hobbies
-
+from utils import attach
 
 
 @allure.title("Successful fill form")
@@ -40,3 +41,8 @@ def test_student_registration_form():
         app.results.should_have_row_with_exact_texts(7, 1, Student.image)
         app.results.should_have_row_with_exact_texts(8, 1, Student.address)
         app.results.should_have_row_with_exact_texts(9, 1, Student.state, Student.city)
+
+    attach.add_html(browser)
+    attach.add_screenshot(browser)
+    attach.add_logs(browser)
+    attach.add_video(browser)

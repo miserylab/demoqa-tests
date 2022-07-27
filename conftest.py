@@ -16,6 +16,8 @@ from utils import attach
 #     browser.config.window_height = 1000
 #     browser.config.window_width = 1000
 
+DEFAULT_BROWSER_VERSION = "100.0"
+
 
 def pytest_addoption(parser):
     parser.addoption(
@@ -27,6 +29,7 @@ def pytest_addoption(parser):
 @pytest.fixture(scope='function')
 def setup_browser(request):
     browser_version = request.config.getoption('--browser_version')
+    browser_version = browser_version if browser_version != "" else DEFAULT_BROWSER_VERSION
     options = Options()
     selenoid_capabilities = {
         "browserName": "chrome",

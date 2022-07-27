@@ -19,7 +19,7 @@ class ApplicationManager:
         (
             browser.all('[id^=google_ads][id$=container__],[id$=Advertisement]')
             .with_(timeout=10)
-            .should(have.size_greater_than_or_equal(3))
+            # .should(have.size_greater_than_or_equal(3))
             .perform(command.js.remove)
         )
         return self

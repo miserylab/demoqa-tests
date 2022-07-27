@@ -19,13 +19,13 @@ def browser_management():
     browser.config.window_width = 1000
 
 
-DEFAULT_BROWSER_VERSION = "99"
+DEFAULT_BROWSER_VERSION = "100.0"
 
 
 def pytest_addoption(parser):
     parser.addoption(
         '--browser_version',
-        default='99'
+        default='100.0'
     )
 
 

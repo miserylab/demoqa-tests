@@ -1,0 +1,16 @@
+{
+  "base": {
+    "project": "some project",
+    "environment": "some env",
+    "comment": "some comment",
+    "reportLink": "https://jenkins.autotests.cloud/job/C01-miserylab-python_1_9_jenkins1/30/",
+    "language": "en",
+    "allureFolder": "allure-report/",
+    "enableChart": true
+  },
+  "telegram": {
+    "token": "5517521665:AAGy5M6Oq-1fGwzbqrf1F9l1sAEnvvBN6a0",
+    "chat": "-1001533447171",
+    "replyTo": ""
+  }
+}

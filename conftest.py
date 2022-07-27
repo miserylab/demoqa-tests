@@ -3,20 +3,21 @@ __author__ = 'miserylab'
 import os
 
 import pytest
-# from selene.support.shared import browser
+from selene.support.shared import browser
 from selene import Browser, Config
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from utils import attach
 from dotenv import load_dotenv
 
-# @pytest.fixture(scope='function', autouse=True)
-# def browser_management():
-#     browser.config.base_url = 'https://demoqa.com'
-#     browser.config.browser_name = 'chrome'
-#     browser.config.hold_browser_open = False
-#     browser.config.window_height = 1000
-#     browser.config.window_width = 1000
+
+@pytest.fixture(scope='function', autouse=True)
+def browser_management():
+    browser.config.base_url = 'https://demoqa.com'
+    browser.config.hold_browser_open = False
+    browser.config.window_height = 1000
+    browser.config.window_width = 1000
+
 
 DEFAULT_BROWSER_VERSION = "100.0"
 

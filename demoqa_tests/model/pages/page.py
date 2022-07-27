@@ -66,7 +66,7 @@ class StudentRegistrationForm:
         return self
 
     def set_state(self, state):
-        dropdown.select(browser.element('#state'), option=state)
+        dropdown.select(browser.element('#state').perform(command.js.scroll_into_view), option=state)
         return self
 
     def set_city(self, city):
